@@ -41,6 +41,7 @@ volumes:
   matchLabels: false
   
 properties:
+  APPZ_LOG_HOST: graylog
   DB_USER_ADMIN: admin
   MONGO_DATABASE: testdb
   MONGO_USER: testuser
