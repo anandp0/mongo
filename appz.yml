@@ -1,5 +1,5 @@
 app:
-  name: MongoDB
+  name: mongodb
   code: MONGODB
   notify: apeethambaran@ecloudcontrol.com
 
@@ -9,44 +9,62 @@ build:
   build_file: none
   output_files: output/*.zip
   image_template: mongo-6.0
-
+  
 deploy:
   context: anandp0/DEV
   type: statefulset
-  replicas: 1
+  replicas: 3
   port:
-    - 27017
+  - 27017
+  - 9216
 
 volumes:
-  - claim: mongo-data
-    mount: /appz/data
-    name: mongo-data
-    size: 5Gi
-    mode: ReadWriteOnce
-
-  - claim: mongo-keys
-    mount: /appz/keys
-    name: mongo-keys
-    size: 1Gi
-    mode: ReadWriteOnce
-
-  - claim: mongo-backup
-    mount: /appz/backup
-    name: mongo-backup
-    size: 5Gi
-    mode: ReadWriteOnce
-
+- claim: mongo-data
+  mount: /appz/data
+  name: mongo-data
+  size: 5Gi
+  mode: ReadWriteOnce
+  matchLabels: false
+  
+- claim: mongo-keys
+  mount: /appz/keys
+  name: mongo-keys
+  size: 1Gi
+  mode: ReadWriteOnce
+  matchLabels: false
+  
+- claim: mongo-backup
+  mount: /appz/backup
+  name: mongo-backup
+  size: 5Gi
+  mode: ReadWriteOnce
+  matchLabels: false
+  
 properties:
-  revision: 12
-  MONGODB_HOST: mongodb-6-0
-  MONGODB_PORT: 27017
   DB_USER_ADMIN: admin
-  DB_USER_ADMIN_PASSWORD:
+  MONGO_DATABASE: testdb
+  MONGO_USER: testuser
+  DB_USER_ADMIN_PASSWORD: 
     vault: DB_USER_ADMIN_PASSWORD
-  MONGO_USER_PASSWORD:
+  MONGO_USER_PASSWORD: 
     vault: MONGO_USER_PASSWORD
-  AUTH_KEY:
+  AUTH_KEY: 
     vault: AUTH_KEY
   ENCRYPTION_KEY:
     vault: ENCRYPTION_KEY
-  AUTH_ENABLE: 0
+  BACKUPFILE: ksfe
+  S3_BUCKET: backup-ksfe
+  AWS_ACCESS_KEY_ID: 
+    vault: AWS_ACCESS_KEY_ID
+  AWS_SECRET_ACCESS_KEY: 
+    vault: AWS_SECRET_ACCESS_KEY
+  REPLICATION: 3
+  AUTH_ENABLE: 1
+  REPLICA_SET_NAME: rs0
+  MASTER_ENABLE: "no"
+  AWS_DEFAULT_REGION: ap-south-1
+  MONGODB_HOST: 127.0.0.1
+  MONGODB_PORT: 27017
+  MONGO_BACKUP_TIME: 2
+  MONGO_BACKUP_DAYS: 7
+  revision : 18
